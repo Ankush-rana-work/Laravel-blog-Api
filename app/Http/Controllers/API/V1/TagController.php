@@ -31,7 +31,7 @@ class TagController extends Controller
      *   ),
      *  @OA\Response(
      *    response=422,
-     *    description="validation error",
+     *    description="validation errors",
      *    @OA\JsonContent(
      *       @OA\Property(property="message", type="string", example="The given data was invalid")
      *        )
