@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost/laravel_blog_api",
+            "url": "http://localhost/Laravel-blog-Api",
             "description": "Demo API Server"
         }
     ],
@@ -810,7 +810,7 @@
                 ],
                 "responses": {
                     "422": {
-                        "description": "validation error",
+                        "description": "validation errors",
                         "content": {
                             "application/json": {
                                 "schema": {
