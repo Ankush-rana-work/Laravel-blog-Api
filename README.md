@@ -73,3 +73,9 @@ To get the API documentation visit below URL
   http://localhost/Laravel-blog-Api/api/docs
 ```
 api/docs is the route after API base URL you can change by visit on l5-swagger.php file inside config folder.
+## Upcoming Integration
+
+- Role and Permission
+- Social Login
+- Php unit testing
+
