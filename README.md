@@ -25,10 +25,15 @@ PHP 7.4+ or above.
 
 Run below command 
 
+Clone repo
+
+```bash
+  git clone https://github.com/Ankush-WD/Laravel-blog-Api.git
+ ``` 
 Install dependencey packages 
 
 ```bash
-  npm run deploy
+  composer install
 ```
 Given read, write permission to a storage folder to avoid permission error
 
@@ -47,9 +52,8 @@ This command will create tables in a database that you mentioned on you .env fil
 ```
 Below command will generate dummy user
 ```bash
-  php artisan migrates
+  php artisan db:seed --class=UserSeeder
 ```
-php artisan deb: seed --class=UserSeeder
 
 Once you run the user seeder, it will create some user. Below is a login credential of one of a user.
 ```bash
