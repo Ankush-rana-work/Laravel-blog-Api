@@ -48,7 +48,7 @@ Generate larval key
 This command will create tables in a database that you mentioned on you .env file.
 
 ```bash
-  php artisan migrates
+  php artisan migrate
 ```
 Below command will generate dummy user
 ```bash
