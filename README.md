@@ -40,16 +40,27 @@ Given read, write permission to a storage folder to avoid permission error
 ```bash
   sudo chmod -R 777 storage/
 ```
-Generate larval key 
+Create a .env file on root of the project then create the new database after that add the credentials on .env file as given below. Below we have used local database you can change it put to your self.
 
 ```bash
-  php artisan key: generate
+    DB_CONNECTION=mysql
+    DB_HOST=127.0.0.1
+    DB_PORT=3306
+    DB_DATABASE=laravel_blog_api
+    DB_USERNAME=root
+    DB_PASSWORD=Tech@123
 ```
 This command will create tables in a database that you mentioned on you .env file.
 
 ```bash
   php artisan migrate
 ```
+Generate larval key 
+
+```bash
+  php artisan key:generate
+```
+
 Below command will generate dummy user
 ```bash
   php artisan db:seed --class=UserSeeder
