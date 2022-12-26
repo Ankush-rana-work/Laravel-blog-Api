@@ -13,12 +13,13 @@ class CategorySingleResource extends JsonResource
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
-    {
+    {   
         return [
             "id"            => $this->id,
             "name"          => $this->name,
             "slug"          => $this->slug,
             "parent_id"     => intval($this->parent_id),
+            "image"         => $this->media->first(),
             'children'      => CategorySingleResource::collection($this->whenLoaded('children')),
         ];
     }
