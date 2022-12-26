@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\CategorySingleResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CategoryCollection extends ResourceCollection
@@ -14,20 +15,6 @@ class CategoryCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return [
-            'data' => $this->collection->map(function($data) {
- 
-                return [
-                    'id'        => $data->id,
-                    'name'      => $data->name,
-                    'slug'      => $data->slug,
-                    'parent_id' => $data->parent_id,
-                    'children'  => $data->children,
-                ];
-            }),
-            'links' => [
-                'self' => 'link-value',
-            ],
-        ];
+        return CategorySingleResource::collection($this->collection);
     }
 }

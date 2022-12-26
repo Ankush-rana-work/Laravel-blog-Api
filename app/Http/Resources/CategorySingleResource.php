@@ -15,11 +15,11 @@ class CategorySingleResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "id"    => $this->id,
-            "name"  => $this->name,
-            "slug"  => $this->slug,
-            "parent_id" => $this->parent_id
-
+            "id"            => $this->id,
+            "name"          => $this->name,
+            "slug"          => $this->slug,
+            "parent_id"     => intval($this->parent_id),
+            'children'      => CategorySingleResource::collection($this->whenLoaded('children')),
         ];
     }
 }
