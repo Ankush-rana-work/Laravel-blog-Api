@@ -2,11 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Tag;
-use App\Models\Post;
 use App\Models\Category;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 
 class CategoryService
 {
@@ -32,7 +28,7 @@ class CategoryService
                     ->toMediaCollection('category');
             }
 
-            return $category;
+            return $category->load('media');
         }   
 
         return [];

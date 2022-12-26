@@ -51,7 +51,7 @@ class CategoryController extends Controller
     public function show( Request $request )
     {
         $per_page   = $request->per_page ?? Config::get('constants.pagination_per_page');
-        $categories = Category::with(['children'])->whereNull('parent_id')->paginate($per_page);
+        $categories = Category::with(['children','media'])->whereNull('parent_id')->paginate($per_page);
 
         if (count($categories)) {
             return (new CategoryCollection($categories))->additional(['message' => 'Category listing']);
