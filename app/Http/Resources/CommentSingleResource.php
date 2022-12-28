@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\UserWithoutTokenResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CommentSingleResource extends JsonResource
@@ -15,12 +16,13 @@ class CommentSingleResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "id"        => $this->id,
-            "user_id"   => $this->user_id,
-            "post_id"   => $this->post_id,
-            "text"      => $this->text,
-            "parent_id" => $this->parent_id,
-            "media"     => $this->media()->first(),
+            'id'            => $this->id,
+            'user_id'       => new UserWithoutTokenResource($this->user),
+            'post_id'       => new PostSingleResource($this->post),
+            'text'          => $this->text,
+            'parent_id'     => $this->parent_id,
+            'media'         => new MediaCollection($this->media),
+            'total_comment' => $this->children->count()
         ];
     }
 }

@@ -25,7 +25,7 @@ class CommentRequest extends FormRequest
     {
 
         return [
-            'post_id'   => 'required|exists:posts,id',
+            'post_id'     => 'required|exists:posts,id',
         ];
     }
 }

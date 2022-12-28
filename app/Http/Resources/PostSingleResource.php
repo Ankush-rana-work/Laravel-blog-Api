@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\MediaResource;
+use App\Http\Resources\TagsSearchCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostSingleResource extends JsonResource
@@ -20,8 +22,8 @@ class PostSingleResource extends JsonResource
             'slug'      => $this->slug,
             'status'    => $this->status,
             'user_id'   => $this->user_id,
-            'media'     => $this->media->first(),
-            'tags'      => $this->tags
+            'media'     => new MediaCollection($this->whenLoaded('media')),
+            'tags'      => new TagsSearchCollection($this->whenLoaded('tags')),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\TagResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class TagsSearchCollection extends ResourceCollection
@@ -14,15 +15,6 @@ class TagsSearchCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return [
-            'data' => $this->collection->map(function($data) {
-                return [
-                    'id'        => $data->id,
-                    'name'      => $data->name,
-                    'slug'      => $data->slug,
-
-                ];
-            })
-        ];
+        return TagResource::collection($this->collection);
     }
 }

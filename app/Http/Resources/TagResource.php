@@ -2,10 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\MediaCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class TagResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,13 +15,10 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'    => $this->id,
-            'name'  => $this->name,
-            'email' => $this->email,
-            'token' => $this->createToken('MyApp')->plainTextToken,
-            'media' =>  new MediaCollection($this->whenLoaded('media'))
+            'id'        => $this->id,
+            'name'      => $this->name,
+            'slug'      => $this->slug,
+            'pivot'     => $this->pivot
         ];
     }
-
-    
 }

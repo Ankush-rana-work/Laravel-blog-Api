@@ -20,7 +20,7 @@ class CommentService
         $comment->user_id = $user->id;
         $comment->post_id = $request->post_id;
         $comment->text    = $request->text;  
-        $comment->parent_id = $request->parent_id?? null;
+        $comment->parent_id = $request->parent_id?? 0;
 
         // save category
         if ($comment->save()) {

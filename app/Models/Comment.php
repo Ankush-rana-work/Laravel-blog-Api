@@ -24,6 +24,6 @@ class Comment extends Model implements HasMedia
 
     public function children()
     {
-        return $this->hasMany(Comment::class, 'parent_id')->with(['children', 'media']);
+        return $this->hasMany(Comment::class, 'parent_id')->with(['children']);
     }
 }
