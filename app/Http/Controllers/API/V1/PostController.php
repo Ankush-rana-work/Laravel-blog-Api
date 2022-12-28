@@ -50,10 +50,8 @@ class PostController extends Controller
      */
     public function show(Request $request)
     {
-       /*  $post= Post::find(9);
-        print_r($post->media()->get());die(); */
         $per_page   = $request->per_page ?? Config::get('constants.pagination_per_page');
-        $posts      =  Post::with(['tags', 'media'])->orderBY('id','desc')->paginate($per_page);
+        $posts      =  Post::with(['media','tags'])->orderBY('id','desc')->paginate($per_page);
 
         if (count($posts)) {
             return (new PostCollection($posts))->additional(['message' => 'Post listing']);

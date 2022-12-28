@@ -15,22 +15,7 @@ class PostCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        return [
-            'data' => $this->collection->map(function($data) {
-                return [
-                    'id'        => $data->id,
-                    'title'     => $data->title,
-                    'slug'      => $data->slug,
-                    'status'    => $data->status,
-                    'user_id'   => $data->user_id,
-                    'medias'    => $data->media->first(),
-                    'tags'      => $data->tags
-                ];
-            }),
-            'links' => [
-                'self' => 'link-value',
-            ],
-        ];
+        return PostSingleResource::collection($this->collection);
     }
     
 }

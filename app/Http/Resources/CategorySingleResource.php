@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\MediaResource;
+use App\Http\Resources\CategoryCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CategorySingleResource extends JsonResource
@@ -19,8 +21,8 @@ class CategorySingleResource extends JsonResource
             "name"          => $this->name,
             "slug"          => $this->slug,
             "parent_id"     => intval($this->parent_id),
-            "image"         => $this->media->first(),
-            'children'      => CategorySingleResource::collection($this->whenLoaded('children')),
+            "image"         => new MediaResource($this->media->first()),
+            'children'      => new CategoryCollection($this->whenLoaded('children')),
         ];
     }
 }

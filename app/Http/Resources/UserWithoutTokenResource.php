@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Resources\MediaCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class UserWithoutTokenResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,10 +19,7 @@ class UserResource extends JsonResource
             'id'    => $this->id,
             'name'  => $this->name,
             'email' => $this->email,
-            'token' => $this->createToken('MyApp')->plainTextToken,
-            'media' =>  new MediaCollection($this->whenLoaded('media'))
+            'media' => new MediaCollection($this->whenLoaded('media'))
         ];
     }
-
-    
 }

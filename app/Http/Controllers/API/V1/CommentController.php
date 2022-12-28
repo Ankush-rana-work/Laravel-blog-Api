@@ -58,14 +58,25 @@ class CommentController extends Controller
      *    ),
      * )
      */
-    public function show( CommentRequest $request )
+    public function show(CommentRequest $request)
     {
         $request->validated();
 
-        $per_page   = $request->per_page ?? Config::get('constants.pagination_per_page');
-        $comment = Comment::with(['user','post', 'children', 'media'])
+        $per_page    = $request->per_page ?? Config::get('constants.pagination_per_page');
+        $parent_id   = $request->parent_id;
+
+        if (empty($parent_id)) {
+            $comment = Comment::with(['user', 'post', 'media'])->withCount('children')
                 ->where('post_id', $request->post_id)
-                ->whereNull('parent_id')->paginate($per_page);
+                ->where('parent_id', 0)
+                ->paginate($per_page);
+        } else {
+            $comment = Comment::with(['user', 'post', 'media'])->withCount('children')
+            ->where('post_id', $request->post_id)
+            ->where('parent_id', $parent_id)
+            ->paginate($per_page);
+        }
+
 
         if (count($comment)) {
             return (new CommentCollection($comment))->additional(['message' => 'Comment listing']);
@@ -74,7 +85,7 @@ class CommentController extends Controller
         return (new CommentCollection($comment))->additional(['message' => 'No comment data available']);
     }
 
-        /**
+    /**
      * @OA\Post(
      * path="/api/v1/comment/add",
      * summary="Add comment",
@@ -139,7 +150,7 @@ class CommentController extends Controller
         }
     }
 
-        /**
+    /**
      * @OA\Post(
      * path="/api/v1/comment/edit/{id}",
      * summary="Upated comment",
@@ -228,7 +239,7 @@ class CommentController extends Controller
      *     )
      * )
      */
-    public function delete( Request $request, $comment_id )
+    public function delete(Request $request, $comment_id)
     {
         try {
             // start the transaction
@@ -238,10 +249,10 @@ class CommentController extends Controller
             if ($post) {
                 DB::commit();
 
-                return $this->sendResponse( 'Comment deleted successfully', null, 200 );
+                return $this->sendResponse('Comment deleted successfully', null, 200);
             }
-            
-            return $this->sendResponse( 'Fail to deleted comment', null, 200 );
+
+            return $this->sendResponse('Fail to deleted comment', null, 200);
         } catch (ModelNotFoundException $ex) {
 
             // it will rollback the data when gets a exception or a error
