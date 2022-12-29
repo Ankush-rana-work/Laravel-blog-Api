@@ -51,7 +51,7 @@ class PostController extends Controller
     public function show(Request $request)
     {
         $per_page   = $request->per_page ?? Config::get('constants.pagination_per_page');
-        $posts      =  Post::with(['media','tags'])->orderBY('id','desc')->paginate($per_page);
+        $posts      =  Post::with(['media','tags','user.media'])->orderBY('id','desc')->paginate($per_page);
 
         if (count($posts)) {
             return (new PostCollection($posts))->additional(['message' => 'Post listing']);
@@ -118,10 +118,11 @@ class PostController extends Controller
 
             if (!empty($post)) {
                 DB::commit();
-                return new PostSingleResource($post);
+                return new PostSingleResource($post->load(['media','tags','user.media']));
             }
 
             abort(302, 'Fail to save post');
+            
         } catch (Exception $ex) {
 
             DB::rollback();
@@ -195,10 +196,11 @@ class PostController extends Controller
 
             if (!empty($post)) {
                 DB::commit();
-                return new PostSingleResource($post);
+                return new PostSingleResource($post->load(['media','tags','user.media']));
             }
 
             abort(302, 'Fail to save post');
+
         } catch (ModelNotFoundException $ex) {
 
             // it will rollback the data when gets a exception or a error
@@ -257,6 +259,7 @@ class PostController extends Controller
             // it will rollback the data when gets a exception or a error
             DB::rollback();
             abort(404, 'Entry for ' . str_replace('App\\', '', $ex->getModel()) . ' not found');
+
         } catch (Exception $ex) {
 
             // it will rollback the data when gets a exception or a error

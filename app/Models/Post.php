@@ -39,4 +39,8 @@ class Post extends Model implements HasMedia
     public function tags(){
         return $this->belongsToMany(Tag::class);
     }
+
+    public function user(){
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
 }

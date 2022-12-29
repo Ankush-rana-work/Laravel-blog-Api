@@ -21,7 +21,7 @@ class PostSingleResource extends JsonResource
             'title'     => $this->title,
             'slug'      => $this->slug,
             'status'    => $this->status,
-            'user_id'   => $this->user_id,
+            'user_id'   => new UserWithoutTokenResource($this->whenLoaded('user')),
             'media'     => new MediaCollection($this->whenLoaded('media')),
             'tags'      => new TagsSearchCollection($this->whenLoaded('tags')),
         ];
