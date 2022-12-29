@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\StoreLoginRequest;
+use App\Http\Resources\UserWithoutTokenResource;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class LoginController extends Controller
@@ -53,7 +54,6 @@ class LoginController extends Controller
      */
     public function login(LoginRequest $request)
     {
-        $request->validated();
 
         try {
             $email      = $request->email;
@@ -62,10 +62,10 @@ class LoginController extends Controller
             if (Auth::attempt(['email' => $email, 'password' => $password])) {
 
                 $user = Auth::user();
-                return new UserResource($user);
+                return new UserResource($user->load('media'));
             }
-
-            abort(401, 'Sorry, wrong email address or password. Please try again');
+            
+            abort(401, 'You have entered an invalid email or password');
         } catch (Exception $ex) {
 
             abort($ex->getStatusCode(), $ex->getMessage());
@@ -118,7 +118,6 @@ class LoginController extends Controller
      */
     public function register(RegisterRequest $request)
     {
-        $request->validated();
 
         try {
             DB::beginTransaction();
@@ -136,9 +135,8 @@ class LoginController extends Controller
 
             DB::commit();
             
-            return (new UserResource($user))
-                ->response()
-                ->setStatusCode(200);
+            return $this->sendResponse('Successfully user has been registered', new UserWithoutTokenResource($user), 201 );
+
         } catch (Exception $ex) {
 
             DB::rollback();
