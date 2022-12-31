@@ -19,6 +19,7 @@ class UserWithoutTokenResource extends JsonResource
             'id'    => $this->id,
             'name'  => $this->name,
             'email' => $this->email,
+            'type'  => $this->type,
             'media' => new MediaCollection($this->whenLoaded('media'))
         ];
     }

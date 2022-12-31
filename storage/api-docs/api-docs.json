@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost/Laravel-blog-Api",
+            "url": "http://my-default-host.com",
             "description": "Demo API Server"
         }
     ],
@@ -596,6 +596,54 @@
                                         "message": {
                                             "type": "string",
                                             "example": "The refresh token is invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/list": {
+            "get": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "User List",
+                "description": "User list",
+                "operationId": "List",
+                "parameters": [
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "user or admin"
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "example": "15"
+                    }
+                ],
+                "responses": {
+                    "422": {
+                        "description": "The type field is required",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The type field is required"
                                         }
                                     },
                                     "type": "object"

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostTagTable extends Migration
+class AddCatIdToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreatePostTagTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_tag', function (Blueprint $table) {
-            $table->increments('id');
-            $table->bigInteger('post_id')->unsigned();
-            $table->bigInteger('tag_id')->unsigned();
+        Schema::table('posts', function (Blueprint $table) {
+            $table->bigInteger('cat_id')->unsigned()->nullable();
+            $table->foreign('cat_id')->references('id')->on('categories');
         });
     }
 
@@ -27,6 +26,8 @@ class CreatePostTagTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_tag');
+        Schema::table('posts', function (Blueprint $table) {
+            //
+        });
     }
 }

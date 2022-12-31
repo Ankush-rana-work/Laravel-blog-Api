@@ -12,6 +12,8 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Resources\UserCollection;
+use Illuminate\Support\Facades\Config;
 use Laravel\Passport\Client as OClient;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Support\Facades\Validator;
@@ -65,7 +67,7 @@ class LoginController extends Controller
 
                 $user = Auth::user();
                 $oClient = OClient::where('password_client', 1)->first();
-                $token_result = $this->getTokenAndRefreshToken($oClient, request('email'), request('password'));
+                $token_result = $this->getTokenAndRefreshToken($oClient, $email, $password);
 
                 if (!empty($token_result)) {
                     $user->passport_token = $token_result;
@@ -168,13 +170,19 @@ class LoginController extends Controller
             ]);
 
             return json_decode((string) $response->getBody()->getContents(), true);
-        } catch (\Exception $ex) {
+        } catch (ClientException $e) {
 
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
+            $messsage_array = json_decode($responseBodyAsString, true);
+            return abort(401, $messsage_array['message']);
+        } catch (\Exception $ex) {
+            die();
             abort(500, $ex->getMessage());
         }
     }
 
-     /**
+    /**
      * @OA\Post(
      * path="/api/v1/user/refresh-token",
      * summary="Refresh-token",
@@ -215,31 +223,89 @@ class LoginController extends Controller
         try {
 
             $oClient    = OClient::where('password_client', 1)->first();
-            $http		 = new Client;
-			$response	 = $http->request( 'POST', env( 'APP_URL' ) . '/oauth/token', [
-				'form_params' => [
-					'grant_type' 	=> 'refresh_token',
-					'refresh_token' => $request->refresh_token,
-					'client_id' 	=> $oClient->id,
-					'client_secret' => $oClient->secret,
-					'scope' 		=> ''
-				]
-			] );
+            $http         = new Client;
+            $response     = $http->request('POST', env('APP_URL') . '/oauth/token', [
+                'form_params' => [
+                    'grant_type'     => 'refresh_token',
+                    'refresh_token' => $request->refresh_token,
+                    'client_id'     => $oClient->id,
+                    'client_secret' => $oClient->secret,
+                    'scope'         => ''
+                ]
+            ]);
 
             $result = json_decode($response->getBody()->getContents(), true);
             return $this->sendResponse('Successfully token has been refreshed', $result, 200);
+        } catch (ClientException $e) {
 
-        }catch ( ClientException $e) {
-
-			$response = $e->getResponse();
-			$responseBodyAsString = $response->getBody()->getContents();
-			$messsage_array = json_decode($responseBodyAsString, true);
+            $response = $e->getResponse();
+            $responseBodyAsString = $response->getBody()->getContents();
+            $messsage_array = json_decode($responseBodyAsString, true);
             return abort(401, $messsage_array['message']);
-
-		} catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             abort(500, $ex->getMessage());
         }
     }
 
-    
+    /**
+     * @OA\Get(
+     * path="/api/v1/user/list",
+     * summary="User List",
+     * description="User list",
+     * operationId="List",
+     * tags={"User"},
+     *  @OA\Parameter(
+     *      name="type",
+     *      in="query",
+     *      required=true,
+     *      example="user or admin",
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Parameter(
+     *      name="per_page",
+     *      in="query",
+     *      required=true,
+     *      example="15",
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *  @OA\Response(
+     *    response=422,
+     *    description="The type field is required",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="The type field is required")
+     *        )
+     *     )
+     * )
+     */
+    public function userList(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'type' => 'required|in:admin,user'
+        ],[
+           'type.in' => 'The selected type must be admin or user' 
+        ]);
+
+        if ($validator->fails()) {
+            return abort(422, $validator->errors()->first());
+        }
+
+        $per_page   = $request->per_page ?? Config::get('constants.pagination_per_page');
+        $posts      =  User::with(['media']);
+
+        if ($request->type) {
+            $posts->where('type', $request->type);
+        }
+
+        $posts = $posts->orderBY('id', 'desc')->paginate($per_page);
+
+        if (count($posts)) {
+            return (new UserCollection($posts))->additional(['message' => 'User listing']);
+        }
+
+        return (new UserCollection($posts))->additional(['message' => 'No user data available']);
+    }
 }

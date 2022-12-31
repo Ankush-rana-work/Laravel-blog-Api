@@ -21,6 +21,7 @@ class PostService
         $post->title        = $request->title;
         $post->content      = $request->content;
         $post->user_id      = $user->id;
+        $post->cat_id       = $user->cat_id;
         $post->status       = 'active';
 
         // saving post

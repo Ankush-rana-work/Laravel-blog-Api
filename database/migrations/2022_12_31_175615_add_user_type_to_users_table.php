@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePostTagTable extends Migration
+class AddUserTypeToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class CreatePostTagTable extends Migration
      */
     public function up()
     {
-        Schema::create('post_tag', function (Blueprint $table) {
-            $table->increments('id');
-            $table->bigInteger('post_id')->unsigned();
-            $table->bigInteger('tag_id')->unsigned();
+        Schema::table('users', function (Blueprint $table) {
+            $table->enum('type', ['admin', 'user'])->default('user');
         });
     }
 
@@ -27,6 +25,8 @@ class CreatePostTagTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('post_tag');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 }
