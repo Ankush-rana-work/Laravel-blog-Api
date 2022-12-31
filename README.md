@@ -60,6 +60,10 @@ Generate larval key
 ```bash
   php artisan key:generate
 ```
+Run below command to generate client id and screte key  
+```bas
+php artisan passport:install
+```
 
 Below command will generate dummy user
 ```bash
