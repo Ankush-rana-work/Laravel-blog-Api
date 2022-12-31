@@ -10,7 +10,7 @@ Laravel is a web application framework with expressive, elegant syntax. This rep
 
 Below are the package used to build api.
 
- - [Sanctum](https://laravel.com/docs/8.x/sanctum)
+ - [Passport](https://laravel.com/docs/8.x/passport)
  - [Spatie Media Library](https://spatie.be/docs/laravel-medialibrary/v9/introduction)
  - [Spatie sluggable](https://github.com/spatie/laravel-sluggable)
  - [Swagger UI](https://github.com/DarkaOnLine/L5-Swagger)
@@ -35,11 +35,6 @@ Install dependencey packages
 ```bash
   composer install
 ```
-Given read, write permission to a storage folder to avoid permission error
-
-```bash
-  sudo chmod -R 777 storage/
-```
 Create a .env file on root of the project then create the new database after that add the credentials on .env file as given below. Below we have used local database you can change it put to your self.
 
 ```bash
@@ -50,6 +45,11 @@ Create a .env file on root of the project then create the new database after tha
     DB_USERNAME=root
     DB_PASSWORD=Tech@123
 ```
+Given read, write permission to a storage folder to avoid permission error
+
+```bash
+  sudo chmod -R 777 storage/
+```
 This command will create tables in a database that you mentioned on you .env file.
 
 ```bash
@@ -59,6 +59,10 @@ Generate larval key
 
 ```bash
   php artisan key:generate
+```
+Run below command to generate client id and screte key  
+```bas
+php artisan passport:install
 ```
 
 Below command will generate dummy user
