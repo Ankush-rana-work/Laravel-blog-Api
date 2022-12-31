@@ -19,7 +19,7 @@ class UserResource extends JsonResource
             'id'    => $this->id,
             'name'  => $this->name,
             'email' => $this->email,
-            'token' => $this->createToken('MyApp')->plainTextToken,
+            'passport_token' => $this->passport_token,
             'media' =>  new MediaCollection($this->whenLoaded('media'))
         ];
     }
