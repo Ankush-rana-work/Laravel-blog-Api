@@ -294,18 +294,18 @@ class LoginController extends Controller
         }
 
         $per_page   = $request->per_page ?? Config::get('constants.pagination_per_page');
-        $posts      =  User::with(['media']);
+        $users      =  User::with(['media'])->withCount(['post']);
 
         if ($request->type) {
-            $posts->where('type', $request->type);
+            $users->where('type', $request->type);
         }
 
-        $posts = $posts->orderBY('id', 'desc')->paginate($per_page);
+        $users = $users->orderBY('id', 'desc')->paginate($per_page);
 
-        if (count($posts)) {
-            return (new UserCollection($posts))->additional(['message' => 'User listing']);
+        if (count($users)) {
+            return (new UserCollection($users))->additional(['message' => 'User listing']);
         }
 
-        return (new UserCollection($posts))->additional(['message' => 'No user data available']);
+        return (new UserCollection($users))->additional(['message' => 'No user data available']);
     }
 }

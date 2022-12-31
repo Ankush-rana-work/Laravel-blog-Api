@@ -69,6 +69,7 @@ class PostService
         $post               = Post::findOrFail($post_id);
         $post->title        = $request->title;
         $post->content      = $request->content;
+        $post->cat_id       = $user->cat_id;
         $post->user_id      = $user->id;
 
         // updateting post data 

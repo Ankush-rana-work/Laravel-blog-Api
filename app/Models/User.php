@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Post;
 use Spatie\MediaLibrary\HasMedia;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
@@ -43,7 +44,14 @@ class User extends Authenticatable implements HasMedia
         'email_verified_at' => 'datetime',
     ];
 
-
-
+    
+    /**
+     * post
+     *
+     * @return void
+     */
+    public function post(){
+        return $this->hasMany(Post::class, 'user_id','id');
+    }
     
 }

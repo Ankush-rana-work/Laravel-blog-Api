@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\UserCollection;
 use App\Http\Resources\MediaCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,6 +21,7 @@ class UserWithoutTokenResource extends JsonResource
             'name'  => $this->name,
             'email' => $this->email,
             'type'  => $this->type,
+            'total_post' => $this->when( $this->post_count !== null, fn () => $this->post_count),
             'media' => new MediaCollection($this->whenLoaded('media'))
         ];
     }
