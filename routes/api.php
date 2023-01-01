@@ -33,7 +33,11 @@ Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('login', [LoginController::class, 'login'])->name('login');
     Route::post('register', [LoginController::class, 'register'])->name('register');
     Route::post('refresh-token', [LoginController::class, 'refreshToken'])->name('refreshToken');
+});
+
+Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth:api']], function () {
     Route::get('list', [LoginController::class, 'userList'])->name('userList');
+    Route::post('edit/{id}', [LoginController::class, 'userUpdate'])->name('userList');
 });
 
 Route::group(['prefix' => 'category', 'as' => 'category.', 'middleware' => ['auth:api']], function () {
