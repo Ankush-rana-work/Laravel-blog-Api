@@ -12,6 +12,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UserEditRequest;
 use App\Http\Resources\UserCollection;
 use Illuminate\Support\Facades\Config;
 use Laravel\Passport\Client as OClient;
@@ -285,8 +286,8 @@ class LoginController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:admin,user'
-        ],[
-           'type.in' => 'The selected type must be admin or user' 
+        ], [
+            'type.in' => 'The selected type must be admin or user'
         ]);
 
         if ($validator->fails()) {
@@ -307,5 +308,74 @@ class LoginController extends Controller
         }
 
         return (new UserCollection($users))->additional(['message' => 'No user data available']);
+    }
+
+    /**
+     * @OA\Post(
+     * path="/api/v1/user/edit/{id}",
+     * summary="Edit User",
+     * description="Api to edit user",
+     * operationId="Edit User",
+     * tags={"User"},
+     * security={
+     *           {"sanctum": {}}
+     *  }, 
+     *     @OA\Parameter(
+     *         description="category id parameter",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                  required={"name"},
+     *                 @OA\Property(
+     *                     property="name",
+     *                     type="string"
+     *                 ),
+     *                @OA\Property(
+     *                     property="media",
+     *                     type="file"
+     *                 ),
+     *             )
+     * 
+     *         )
+     *     ),
+     *  @OA\Response(
+     *    response=401,
+     *    description="validation error",
+     *    @OA\JsonContent(
+     *       @OA\Property(property="message", type="string", example="The refresh token is invalid")
+     *        )
+     *     )
+     * )
+     */
+    public function userUpdate(UserEditRequest $request, $id)
+    {
+        try {
+            DB::beginTransaction();
+            $user = User::findOrFail($id);
+
+            $user->name = $request->name;
+
+            if ($request->hasFile('media')) {
+                $user->clearMediaCollection('user');
+                $user->addMediaFromRequest('media')
+                    ->toMediaCollection('user');
+            }
+            
+            $user->save();
+            $user->load('media');
+            DB::commit();
+
+            return $this->sendResponse('Successfully user has been updated', new UserWithoutTokenResource($user), 201);
+        } catch (Exception $ex) {
+
+            DB::rollback();
+            abort(500, $ex->getMessage());
+        }
     }
 }

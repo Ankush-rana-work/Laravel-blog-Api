@@ -654,6 +654,70 @@
                 }
             }
         },
+        "/api/v1/user/edit/{id}": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Edit User",
+                "description": "Api to edit user",
+                "operationId": "Edit User",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "category id parameter",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "name"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string"
+                                    },
+                                    "media": {
+                                        "type": "file"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The refresh token is invalid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
         "/api/v1/post": {
             "get": {
                 "tags": [

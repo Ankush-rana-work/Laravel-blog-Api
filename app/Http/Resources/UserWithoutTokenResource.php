@@ -22,7 +22,8 @@ class UserWithoutTokenResource extends JsonResource
             'email' => $this->email,
             'type'  => $this->type,
             'total_post' => $this->when( $this->post_count !== null, fn () => $this->post_count),
-            'media' => new MediaCollection($this->whenLoaded('media'))
+            'media' => new MediaCollection($this->whenLoaded('media')),
+            'is_verfied' =>  !empty($this->email_verified_at)?1:0
         ];
     }
 }
