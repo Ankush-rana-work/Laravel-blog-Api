@@ -12,6 +12,7 @@ use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\User\UserListRequest;
 use App\Http\Requests\UserEditRequest;
 use App\Http\Resources\UserCollection;
 use Illuminate\Support\Facades\Config;
@@ -282,26 +283,27 @@ class LoginController extends Controller
      *     )
      * )
      */
-    public function userList(Request $request)
+    public function userList(UserListRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'type' => 'required|in:admin,user'
-        ], [
-            'type.in' => 'The selected type must be admin or user'
-        ]);
 
-        if ($validator->fails()) {
-            return abort(422, $validator->errors()->first());
-        }
-
-        $per_page   = $request->per_page ?? Config::get('constants.pagination_per_page');
-        $users      =  User::with(['media'])->withCount(['post']);
+        $per_page           = $request->per_page ?? Config::get('constants.pagination_per_page');
+        $sort_field_name    = $request->sort_file_name ?? "id";
+        $sort_field_order   = $request->sort_field_order ?? "desc";
+        $search_text        = $request->search_text ?? "";
+        $users              = User::with(['media'])->withCount(['post']);
 
         if ($request->type) {
             $users->where('type', $request->type);
         }
-
-        $users = $users->orderBY('id', 'desc')->paginate($per_page);
+        
+        if( $search_text!="" ){
+            $users->where(function($query) use ($search_text) {
+                $query->where('name', 'like', '%' .$search_text.'%' )
+                  ->orWhere('email', 'like', '%' .$search_text.'%' );
+            });
+        } 
+        
+        $users = $users->orderBY($sort_field_name, $sort_field_order)->paginate($per_page);
 
         if (count($users)) {
             return (new UserCollection($users))->additional(['message' => 'User listing']);
